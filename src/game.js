@@ -81,16 +81,6 @@ export default class Game extends Phaser.Scene {
 
     create ()
     {
-        //const logo = this.add.image(400, 150, 'logo');
-
-        //this.tweens.add({
-        //    targets: logo,
-        //    y: 450,
-        //    duration: 2000,
-        //    ease: "Power2",
-        //    yoyo: true,
-        //    loop: -1
-        //});
         this.mappos = 450;
         this.mappos2 = 914;
         this.bg1 = this.add.image(this.mappos,397, 'bg1');
@@ -113,7 +103,7 @@ export default class Game extends Phaser.Scene {
         this.bg29 = this.add.image(this.mappos2,397, 'bg9');
         this.bg10 = this.add.image(this.mappos,397, 'bg10');
         this.bg210 = this.add.image(this.mappos2,397, 'bg10');
-        
+
         this.anims.create({
             key: 'idle',
             frames: this.anims.generateFrameNumbers('idle', { frames: [0,1,2,3,4] }),
@@ -140,7 +130,7 @@ export default class Game extends Phaser.Scene {
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
         this.player.setVelocity(0);
-        
+
         this.bg11 = this.add.image(450,397, 'bg11');
         this.bg211 = this.add.image(this.mappos2,397, 'bg11');
         //player.setGravityY(100);
@@ -148,14 +138,14 @@ export default class Game extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, 928, 743);
         this.cameras.main.centerOn(this.player.x, this.player.y);
         this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
-        
-        
+
+
         //this.cameras.main.setZoom(2);
         this.cameras.main.setZoom(2);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.pointer = this.input.activePointer;
-        
+
         // Then later in one of your scenes, create a new button:
         this.isRunning = false
         this.isAttacking = false
@@ -165,10 +155,92 @@ export default class Game extends Phaser.Scene {
         //adding some debug text that displays to the camera position instead of world position
         this.debug = this.add.text(300, 600, '').setOrigin(0.5);
         this.debug.setScrollFactor(0,0);
+        this.textBox("fuck reaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaly long")
+        this.fighting()
+        this.notFighting()
+        this.newText("ppbutthole")
+        //this.graphics.strokeRect(95, 150, 90, 100);
+        //this.graphics.fillRect(95, 150, 90, 100);
+        //this.graphics.strokeRect(188, 150, 130, 100);
+        //this.graphics.fillRect(188, 150, 130, 100);
+    }
+
+    fighting(){
+      this.playerBox()
+      this.enemyBox()
+    }
+
+    notFighting(){
+      this.playerName.destroy()
+      this.playerStats.destroy()
+      this.playerGraphics.destroy()
+      this.enemyName.destroy()
+      this.enemyStats.destroy()
+      this.enemyGraphics.destroy()
+    }
+
+    playerBox(){
+      this.playerGraphics = this.add.graphics();
+      this.playerGraphics.lineStyle(1, 0xffffff);
+      this.playerGraphics.fillStyle(0x031f4c, 1);
+      this.playerGraphics.strokeRect(50, 350, 100, 200);
+      this.playerGraphics.fillRect(50, 350, 100, 200);
+      this.playerName = this.add.text(60, 360, 'Thomas', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
+      this.playerStats = this.add.text(60, 370, 'HP:0\nLevel:0\nStatus:0\nDescription: \ndumb', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
+
+    }
+
+    enemyBox(){
+      this.enemyGraphics = this.add.graphics();
+      this.enemyGraphics.lineStyle(1, 0xffffff);
+      this.enemyGraphics.fillStyle(0x031f4c, 1);
+      this.enemyGraphics.strokeRect(250, 350, 100, 200);
+      this.enemyGraphics.fillRect(250, 350, 100, 200);
+
+      this.enemyName = this.add.text(260, 360, 'Enemy', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
+      this.enemyStats = this.add.text(260, 370, 'HP:0\nLevel:0\nStatus:0\nah', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
+
+    }
+
+    textBox(str){
+      this.graphics = this.add.graphics();
+      this.graphics.lineStyle(1, 0xffffff);
+      this.graphics.fillStyle(0x031f4c, 1);
+      this.graphics.strokeRect(50, 650, 300, 50);
+      this.graphics.fillRect(50, 650, 300, 50);
+
+      this.label = this.add.text(60, 660, '', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
+      this.typewriteText(str);
+    }
+
+    newText(str){
+      this.label.text = ""
+      typewriteText(str)
+    }
+
+    textBoxDestroy(){
+      this.graphics.destroy()
+      this.label.destroy()
+    }
+
+    typewriteText(text) {
+	     const length = text.length
+	     let i = 0
+	     this.time.addEvent({
+		       callback: () => {
+		           this.label.text += text[i]
+			         ++i
+               if (i==length-1){
+                 //signal next
+                 this.textBoxDestroy()
+               }
+	         },
+		       repeat: length-1,
+		       delay: 50
+       })
     }
 
     attack(){
-
         if (!this.isAttacking){
             this.isAttacking = true
             this.player.play('attack');
@@ -180,7 +252,7 @@ export default class Game extends Phaser.Scene {
                     this.runUp();
                 }
             })
-            
+
         }
     }
 
@@ -218,7 +290,7 @@ export default class Game extends Phaser.Scene {
         this.swapChunks(this.bg9, this.bg29);
         this.swapChunks(this.bg10, this.bg210);
         this.swapChunks(this.bg11, this.bg211);
-    
+
         if(this.isRunning){
             this.bg1.x -= 0.1;
             this.bg2.x -= 0.2;
