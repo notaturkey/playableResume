@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import logoImg from './assets/logo.png';
 import bg1 from './assets/background/bg1.png';
 import bg2 from './assets/background/bg2.png';
 import bg3 from './assets/background/bg3.png';
@@ -22,11 +21,11 @@ class Button {
         const button = scene.add.text(x, y, label)
             .setOrigin(0.5)
             .setPadding(10)
-            .setStyle({ backgroundColor: '#111' })
+            .setStyle({ backgroundColor: '#031f4c' })
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => callback())
             .on('pointerup', ()=> callback2())
-            .on('pointerover', () => button.setStyle({ fill: '#f39c12' }))
+            .on('pointerover', () => button.setStyle({ fill: '#000' }))
             .on('pointerout', () => {
                 button.setStyle({ fill: '#FFF' })
                 scene.isRunning = false
@@ -41,11 +40,11 @@ class AttackButton {
         const button = scene.add.text(x, y, label)
             .setOrigin(0.5)
             .setPadding(10)
-            .setStyle({ backgroundColor: '#111' })
+            .setStyle({ backgroundColor: '#031f4c' })
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => callback())
             .on('pointerup', ()=> callback2())
-            .on('pointerover', () => button.setStyle({ fill: '#f39c12' }))
+            .on('pointerover', () => button.setStyle({ fill: '#000' }))
             .on('pointerout', () => {
                 button.setStyle({ fill: '#FFF' })
                 scene.isRunning = false
@@ -62,7 +61,6 @@ export default class Game extends Phaser.Scene {
 
     preload ()
     {
-        this.load.image('logo', logoImg);
         this.load.image('bg1', bg1);
         this.load.image('bg2', bg2);
         this.load.image('bg3', bg3);
@@ -157,12 +155,7 @@ export default class Game extends Phaser.Scene {
         this.debug.setScrollFactor(0,0);
         this.textBox("fuck reaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaly long")
         this.fighting()
-        this.notFighting()
-        this.newText("ppbutthole")
-        //this.graphics.strokeRect(95, 150, 90, 100);
-        //this.graphics.fillRect(95, 150, 90, 100);
-        //this.graphics.strokeRect(188, 150, 130, 100);
-        //this.graphics.fillRect(188, 150, 130, 100);
+        //this.notFighting()
     }
 
     fighting(){
@@ -214,30 +207,34 @@ export default class Game extends Phaser.Scene {
     }
 
     newText(str){
-      this.label.text = ""
-      typewriteText(str)
+        if (!this.isTyping){
+            this.label.text = ""
+            this.typewriteText(str)
+        }
     }
 
-    textBoxDestroy(){
-      this.graphics.destroy()
-      this.label.destroy()
+    textBoxDestroy() {
+        if (this.isDoneTyping) {
+            this.graphics.destroy()
+            this.label.destroy()
+        }
     }
 
     typewriteText(text) {
-	     const length = text.length
-	     let i = 0
-	     this.time.addEvent({
-		       callback: () => {
-		           this.label.text += text[i]
-			         ++i
-               if (i==length-1){
-                 //signal next
-                 this.textBoxDestroy()
-               }
-	         },
-		       repeat: length-1,
-		       delay: 50
-       })
+	    const length = text.length
+	    let i = 0
+        this.isTyping = true
+	    this.time.addEvent({
+		    callback: () => {
+		        this.label.text += text[i]
+			    ++i
+                if (i == length){
+                    this.isTyping = false
+                }
+	        },
+		    repeat: length-1,
+		    delay: 50
+        })
     }
 
     attack(){
@@ -318,6 +315,9 @@ export default class Game extends Phaser.Scene {
         else {
             true;
         }
+        console.log(this.isTyping)
         this.debug.setText(['x:'+this.bg11.x ,'y:'+this.bg11.y]);
+        
+        
     }
 }
