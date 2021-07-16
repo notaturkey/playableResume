@@ -14,6 +14,7 @@ import bg11 from './assets/background/bg11.png';
 import idle from './assets/player/idle.png';
 import run from './assets/player/run.png';
 import attack from './assets/player/attack.png';
+import bug from './assets/player/bug.png';
 
 class Button {
     constructor(x, y, label, scene, callback, callback2) {
@@ -75,6 +76,8 @@ export default class Game extends Phaser.Scene {
         this.load.spritesheet('idle', idle, { frameWidth: 126, frameHeight: 39 });
         this.load.spritesheet('run', run, { frameWidth: 126, frameHeight: 39 });
         this.load.spritesheet('attack', attack, { frameWidth: 126, frameHeight: 39 });
+
+        this.load.image('bug',bug);
     }
 
     create ()
@@ -121,19 +124,51 @@ export default class Game extends Phaser.Scene {
             repeat: -1
         });
 
-        this.player = this.physics.add.sprite(100, 793);
+        this.player = this.physics.add.sprite(100, 730);
         this.player.play('idle')
         this.player.debugShowVelocity;
         this.player.setOffset(50, 1);
         this.player.setBounce(0.2);
-        this.player.setCollideWorldBounds(true);
+        //this.player.setCollideWorldBounds(true);
         this.player.setVelocity(0);
+
+        this.bug = this.physics.add.image(700, 730, 'bug')
+        this.bug.debugShowVelocity;
+        //this.bug.setOffset(50, 1);
+        this.bug.setBounce(0.2);
+        //this.bug.setCollideWorldBounds(true);
+        this.bug.setVelocity(0);
+        //this.bug.setImmovable(true);
+        this.bugUp = true;
+
+
+        this.box = this.physics.add.sprite(500, 730);
+        this.box.debugShowVelocity;
+        this.box.setVelocity(0);
+        this.player.setOffset(50, 1);
+
+        this.playerBlocked = false
+        this.physics.add.collider(this.player, this.box, () => {
+            this.box.destroy();
+            this.playerBlocked = true;
+            this.fighting();
+
+            this.textBox("Oh No! You've encountered a poorly drawn bug!");
+            
+
+            this.button = new AttackButton(300,750,'Ok', this, () => { 
+                    if (!this.isTyping) {
+                        console.log("hit")
+                        this.textBoxDestroy();
+                    }
+                }, ()=>{});
+        });
 
         this.bg11 = this.add.image(450,397, 'bg11');
         this.bg211 = this.add.image(this.mappos2,397, 'bg11');
         //player.setGravityY(100);
         this.cameras.main.setBounds(0, 0, 928, 793);
-        this.physics.world.setBounds(0, 0, 928, 743);
+        this.physics.world.setBounds(0, 0, 928, 900);
         this.cameras.main.centerOn(this.player.x, this.player.y);
         this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
 
@@ -148,14 +183,22 @@ export default class Game extends Phaser.Scene {
         this.isRunning = false
         this.isAttacking = false
 
-        this.button = new Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
-        this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
         //adding some debug text that displays to the camera position instead of world position
         this.debug = this.add.text(300, 600, '').setOrigin(0.5);
         this.debug.setScrollFactor(0,0);
-        this.textBox("fuck reaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaly long")
-        this.fighting()
-        //this.notFighting()
+        this.isTyping = false
+        this.textBox("You are Thomas McDonald, a young developer fresh out of the University of Colorado at Colorado Springs ready to fight Bugs!")
+        this.button = new Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
+        //this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
+
+        this.button = new AttackButton(300,750,'Ok', this, () => {
+            if (!this.isTyping) {
+                this.textBoxDestroy();
+                this.button = new Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
+                this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
+            }
+        }, ()=>{});
+        
     }
 
     fighting(){
@@ -214,7 +257,7 @@ export default class Game extends Phaser.Scene {
     }
 
     textBoxDestroy() {
-        if (this.isDoneTyping) {
+        if (!this.isTyping) {
             this.graphics.destroy()
             this.label.destroy()
         }
@@ -241,7 +284,6 @@ export default class Game extends Phaser.Scene {
         if (!this.isAttacking){
             this.isAttacking = true
             this.player.play('attack');
-            console.log('playerAttacked');
             this.time.addEvent({
                 delay: 1000, // in ms
                 callback: () => {
@@ -287,8 +329,25 @@ export default class Game extends Phaser.Scene {
         this.swapChunks(this.bg9, this.bg29);
         this.swapChunks(this.bg10, this.bg210);
         this.swapChunks(this.bg11, this.bg211);
+        
+        if (this.bugUp && this.bug.y < 710 ){ 
+            this.bugUp = false;
+        }
+        else if (!this.bugUp && this.bug.y > 740){
+            this.bugUp = true;
+        }
 
-        if(this.isRunning){
+        if (this.bugUp){
+            this.bug.y -= 0.1;
+        }
+        else{
+            this.bug.y += 0.1;
+        }
+        
+
+        //this.physics.arcade.collide(this.player, this.bug);
+        //this.physics.arcade.collide(this.player, this.bug);
+        if(this.isRunning && !this.playerBlocked){
             this.bg1.x -= 0.1;
             this.bg2.x -= 0.2;
             this.bg3.x -= 0.3;
@@ -311,11 +370,14 @@ export default class Game extends Phaser.Scene {
             this.bg29.x -= 1.7;
             this.bg210.x -= 1.8;
             this.bg211.x -=2;
+
+            this.bug.x -=2;
+
+            this.box.x -=2;
         }
         else {
             true;
         }
-        console.log(this.isTyping)
         this.debug.setText(['x:'+this.bg11.x ,'y:'+this.bg11.y]);
         
         
