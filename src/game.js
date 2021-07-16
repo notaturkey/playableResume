@@ -126,14 +126,14 @@ export default class Game extends Phaser.Scene {
 
         this.player = this.physics.add.sprite(100, 730);
         this.player.play('idle')
-        this.player.debugShowVelocity;
+        //this.player.debugShowVelocity;
         this.player.setOffset(50, 1);
         this.player.setBounce(0.2);
         //this.player.setCollideWorldBounds(true);
         this.player.setVelocity(0);
 
         this.bug = this.physics.add.image(700, 730, 'bug')
-        this.bug.debugShowVelocity;
+        //this.bug.debugShowVelocity;
         //this.bug.setOffset(50, 1);
         this.bug.setBounce(0.2);
         //this.bug.setCollideWorldBounds(true);
@@ -143,7 +143,7 @@ export default class Game extends Phaser.Scene {
 
 
         this.box = this.physics.add.sprite(500, 730);
-        this.box.debugShowVelocity;
+        //this.box.debugShowVelocity;
         this.box.setVelocity(0);
         this.player.setOffset(50, 1);
 
@@ -155,10 +155,14 @@ export default class Game extends Phaser.Scene {
 
             this.textBox("Oh No! You've encountered a poorly drawn bug!");
             
-
+            this.secondPrompt = false
             this.button = new AttackButton(300,750,'Ok', this, () => { 
-                    if (!this.isTyping) {
-                        console.log("hit")
+                    if (!this.isTyping && !this.secondPrompt) {
+                        this.textBoxDestroy();
+                        this.textBox("Welp, thats all I have done so far. pretty good right? deffinetly hireable material over here ;)");
+                        this.secondPrompt = true
+                    }
+                    else{
                         this.textBoxDestroy();
                     }
                 }, ()=>{});
@@ -184,10 +188,10 @@ export default class Game extends Phaser.Scene {
         this.isAttacking = false
 
         //adding some debug text that displays to the camera position instead of world position
-        this.debug = this.add.text(300, 600, '').setOrigin(0.5);
-        this.debug.setScrollFactor(0,0);
+        //this.debug = this.add.text(300, 600, '').setOrigin(0.5);
+        //this.debug.setScrollFactor(0,0);
         this.isTyping = false
-        this.textBox("You are Thomas McDonald, a young developer fresh out of the University of Colorado at Colorado Springs ready to fight Bugs!")
+        this.textBox("Here is Thomas McDonald, a young developer fresh out of college with some skills under his belt to fight some bugs!")
         this.button = new Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
         //this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
 
@@ -234,7 +238,7 @@ export default class Game extends Phaser.Scene {
       this.enemyGraphics.fillRect(250, 350, 100, 200);
 
       this.enemyName = this.add.text(260, 360, 'Enemy', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
-      this.enemyStats = this.add.text(260, 370, 'HP:0\nLevel:0\nStatus:0\nah', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
+      this.enemyStats = this.add.text(260, 370, 'HP:0\nLevel:0\nStatus:\n Poorly Drawn', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
 
     }
 
@@ -378,7 +382,7 @@ export default class Game extends Phaser.Scene {
         else {
             true;
         }
-        this.debug.setText(['x:'+this.bg11.x ,'y:'+this.bg11.y]);
+        //this.debug.setText(['x:'+this.bg11.x ,'y:'+this.bg11.y]);
         
         
     }
