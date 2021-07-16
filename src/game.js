@@ -125,14 +125,14 @@ export default class Game extends Phaser.Scene {
         });
 
         this.player = this.physics.add.sprite(100, 730);
-        this.player.play('idle')
+        this.player.play('idle');
         //this.player.debugShowVelocity;
         this.player.setOffset(50, 1);
         this.player.setBounce(0.2);
         //this.player.setCollideWorldBounds(true);
         this.player.setVelocity(0);
 
-        this.bug = this.physics.add.image(700, 730, 'bug')
+        this.bug = this.physics.add.image(700, 730, 'bug');
         //this.bug.debugShowVelocity;
         //this.bug.setOffset(50, 1);
         this.bug.setBounce(0.2);
@@ -155,12 +155,12 @@ export default class Game extends Phaser.Scene {
 
             this.textBox("Oh No! You've encountered a poorly drawn bug!");
             
-            this.secondPrompt = false
+            this.secondPrompt = false;
             this.button = new AttackButton(300,750,'Ok', this, () => { 
                     if (!this.isTyping && !this.secondPrompt) {
                         this.textBoxDestroy();
                         this.textBox("Welp, thats all I have done so far. pretty good right? deffinetly hireable material over here ;)");
-                        this.secondPrompt = true
+                        this.secondPrompt = true;
                     }
                     else{
                         this.textBoxDestroy();
@@ -184,14 +184,14 @@ export default class Game extends Phaser.Scene {
         this.pointer = this.input.activePointer;
 
         // Then later in one of your scenes, create a new button:
-        this.isRunning = false
-        this.isAttacking = false
+        this.isRunning = false;
+        this.isAttacking = false;
 
         //adding some debug text that displays to the camera position instead of world position
         //this.debug = this.add.text(300, 600, '').setOrigin(0.5);
         //this.debug.setScrollFactor(0,0);
-        this.isTyping = false
-        this.textBox("Here is Thomas McDonald, a young developer fresh out of college with some skills under his belt to fight some bugs!")
+        this.isTyping = false;
+        this.textBox("Here is Thomas McDonald, a young developer fresh out of college with some skills under his belt to fight some bugs!");
         this.button = new Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
         //this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
 
@@ -206,17 +206,17 @@ export default class Game extends Phaser.Scene {
     }
 
     fighting(){
-      this.playerBox()
-      this.enemyBox()
+      this.playerBox();
+      this.enemyBox();
     }
 
     notFighting(){
-      this.playerName.destroy()
-      this.playerStats.destroy()
-      this.playerGraphics.destroy()
-      this.enemyName.destroy()
-      this.enemyStats.destroy()
-      this.enemyGraphics.destroy()
+      this.playerName.destroy();
+      this.playerStats.destroy();
+      this.playerGraphics.destroy();
+      this.enemyName.destroy();
+      this.enemyStats.destroy();
+      this.enemyGraphics.destroy();
     }
 
     playerBox(){
@@ -255,28 +255,28 @@ export default class Game extends Phaser.Scene {
 
     newText(str){
         if (!this.isTyping){
-            this.label.text = ""
-            this.typewriteText(str)
+            this.label.text = "";
+            this.typewriteText(str);
         }
     }
 
     textBoxDestroy() {
         if (!this.isTyping) {
-            this.graphics.destroy()
-            this.label.destroy()
+            this.graphics.destroy();
+            this.label.destroy();
         }
     }
 
     typewriteText(text) {
-	    const length = text.length
-	    let i = 0
-        this.isTyping = true
+	    const length = text.length;
+	    let i = 0;
+        this.isTyping = true;
 	    this.time.addEvent({
 		    callback: () => {
-		        this.label.text += text[i]
-			    ++i
+		        this.label.text += text[i];
+			    ++i;
                 if (i == length){
-                    this.isTyping = false
+                    this.isTyping = false;
                 }
 	        },
 		    repeat: length-1,
@@ -286,12 +286,12 @@ export default class Game extends Phaser.Scene {
 
     attack(){
         if (!this.isAttacking){
-            this.isAttacking = true
+            this.isAttacking = true;
             this.player.play('attack');
             this.time.addEvent({
                 delay: 1000, // in ms
                 callback: () => {
-                    this.isAttacking = false
+                    this.isAttacking = false;
                     this.runUp();
                 }
             })
