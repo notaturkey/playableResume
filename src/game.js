@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import * as helper from './gameHelper' ;
 import bg1 from './assets/background/bg1.png';
 import bg2 from './assets/background/bg2.png';
 import bg3 from './assets/background/bg3.png';
@@ -16,52 +17,12 @@ import run from './assets/player/run.png';
 import attack from './assets/player/attack.png';
 import bug from './assets/player/bug.png';
 
-class Button {
-    constructor(x, y, label, scene, callback, callback2) {
-        this.isDown = false
-        const button = scene.add.text(x, y, label)
-            .setOrigin(0.5)
-            .setPadding(10)
-            .setStyle({ backgroundColor: '#031f4c' })
-            .setInteractive({ useHandCursor: true })
-            .on('pointerdown', () => callback())
-            .on('pointerup', ()=> callback2())
-            .on('pointerover', () => button.setStyle({ fill: '#000' }))
-            .on('pointerout', () => {
-                button.setStyle({ fill: '#FFF' })
-                scene.isRunning = false
-                scene.player.play('idle');
-            });
-    }
-}
-
-class AttackButton {
-    constructor(x, y, label, scene, callback, callback2) {
-        this.isDown = false
-        const button = scene.add.text(x, y, label)
-            .setOrigin(0.5)
-            .setPadding(10)
-            .setStyle({ backgroundColor: '#031f4c' })
-            .setInteractive({ useHandCursor: true })
-            .on('pointerdown', () => callback())
-            .on('pointerup', ()=> callback2())
-            .on('pointerover', () => button.setStyle({ fill: '#000' }))
-            .on('pointerout', () => {
-                button.setStyle({ fill: '#FFF' })
-                scene.isRunning = false
-                //scene.player.play('idle');
-            });
-    }
-}
-
 export default class Game extends Phaser.Scene {
-    constructor ()
-    {
+    constructor (){
         super('game');
     }
 
-    preload ()
-    {
+    preload (){
         this.load.image('bg1', bg1);
         this.load.image('bg2', bg2);
         this.load.image('bg3', bg3);
@@ -80,8 +41,7 @@ export default class Game extends Phaser.Scene {
         this.load.image('bug',bug);
     }
 
-    create ()
-    {
+    create (){
         this.mappos = 450;
         this.mappos2 = 914;
         this.bg1 = this.add.image(this.mappos,397, 'bg1');
@@ -124,74 +84,69 @@ export default class Game extends Phaser.Scene {
             repeat: -1
         });
 
+        //Player
         this.player = this.physics.add.sprite(100, 730);
         this.player.play('idle');
-        //this.player.debugShowVelocity;
         this.player.setOffset(50, 1);
         this.player.setBounce(0.2);
-        //this.player.setCollideWorldBounds(true);
         this.player.setVelocity(0);
-
-        this.bug = this.physics.add.image(700, 730, 'bug');
-        //this.bug.debugShowVelocity;
-        //this.bug.setOffset(50, 1);
-        this.bug.setBounce(0.2);
-        //this.bug.setCollideWorldBounds(true);
-        this.bug.setVelocity(0);
-        //this.bug.setImmovable(true);
-        this.bugUp = true;
-
-
-        this.box = this.physics.add.sprite(500, 730);
-        //this.box.debugShowVelocity;
-        this.box.setVelocity(0);
-        this.player.setOffset(50, 1);
-
         this.playerBlocked = false
+        
+
+        //Bug 1 
+        this.bug = this.physics.add.image(700, 730, 'bug');
+        this.bug.setBounce(0.2);
+        this.bug.setVelocity(0);
+        this.bugUp = true;
+        
+        //Collision Box
+        this.box = this.physics.add.sprite(500, 730);
+        this.box.setVelocity(0);
+        
+        //On Collision
         this.physics.add.collider(this.player, this.box, () => {
             this.box.destroy();
             this.playerBlocked = true;
-            this.fighting();
+            helper.fighting(this);
 
-            this.textBox("Oh No! You've encountered a poorly drawn bug!");
+            helper.textBox(this,"Oh No! You've encountered a poorly drawn bug!");
             
             this.secondPrompt = false;
             this.button = new AttackButton(300,750,'Ok', this, () => { 
                     if (!this.isTyping && !this.secondPrompt) {
                         this.textBoxDestroy();
-                        this.textBox("Welp, thats all I have done so far. pretty good right? deffinetly hireable material over here ;)");
+                        this.textBox("Which skill should thomas use to defeat this bug?");
                         this.secondPrompt = true;
                     }
                     else{
                         this.textBoxDestroy();
+                        this.destroy();
                     }
                 }, ()=>{});
         });
 
         this.bg11 = this.add.image(450,397, 'bg11');
         this.bg211 = this.add.image(this.mappos2,397, 'bg11');
-        //player.setGravityY(100);
+        
+        //Camera
         this.cameras.main.setBounds(0, 0, 928, 793);
-        this.physics.world.setBounds(0, 0, 928, 900);
         this.cameras.main.centerOn(this.player.x, this.player.y);
         this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
-
-
-        //this.cameras.main.setZoom(2);
         this.cameras.main.setZoom(2);
 
-        this.cursors = this.input.keyboard.createCursorKeys();
         this.pointer = this.input.activePointer;
 
-        // Then later in one of your scenes, create a new button:
-        this.isRunning = false;
-        this.isAttacking = false;
 
         //adding some debug text that displays to the camera position instead of world position
         //this.debug = this.add.text(300, 600, '').setOrigin(0.5);
         //this.debug.setScrollFactor(0,0);
+        
+        // game states 
+        this.isRunning = false;
+        this.isAttacking = false;
         this.isTyping = false;
-        this.textBox("Here is Thomas McDonald, a young developer fresh out of college with some skills under his belt to fight some bugs!");
+        
+        helper.textBox(this,"Here is Thomas McDonald, a young developer fresh out of college with some skills under his belt to fight some bugs!");
         this.button = new Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
         //this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
 
@@ -199,105 +154,13 @@ export default class Game extends Phaser.Scene {
             if (!this.isTyping) {
                 this.textBoxDestroy();
                 this.button = new Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
-                this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
+                //this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
             }
         }, ()=>{});
         
     }
 
-    fighting(){
-      this.playerBox();
-      this.enemyBox();
-    }
-
-    notFighting(){
-      this.playerName.destroy();
-      this.playerStats.destroy();
-      this.playerGraphics.destroy();
-      this.enemyName.destroy();
-      this.enemyStats.destroy();
-      this.enemyGraphics.destroy();
-    }
-
-    playerBox(){
-      this.playerGraphics = this.add.graphics();
-      this.playerGraphics.lineStyle(1, 0xffffff);
-      this.playerGraphics.fillStyle(0x031f4c, 1);
-      this.playerGraphics.strokeRect(50, 350, 100, 200);
-      this.playerGraphics.fillRect(50, 350, 100, 200);
-      this.playerName = this.add.text(60, 360, 'Thomas', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
-      this.playerStats = this.add.text(60, 370, 'HP:0\nLevel:0\nStatus:0\nDescription: \ndumb', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
-
-    }
-
-    enemyBox(){
-      this.enemyGraphics = this.add.graphics();
-      this.enemyGraphics.lineStyle(1, 0xffffff);
-      this.enemyGraphics.fillStyle(0x031f4c, 1);
-      this.enemyGraphics.strokeRect(250, 350, 100, 200);
-      this.enemyGraphics.fillRect(250, 350, 100, 200);
-
-      this.enemyName = this.add.text(260, 360, 'Enemy', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
-      this.enemyStats = this.add.text(260, 370, 'HP:0\nLevel:0\nStatus:\n Poorly Drawn', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
-
-    }
-
-    textBox(str){
-      this.graphics = this.add.graphics();
-      this.graphics.lineStyle(1, 0xffffff);
-      this.graphics.fillStyle(0x031f4c, 1);
-      this.graphics.strokeRect(50, 650, 300, 50);
-      this.graphics.fillRect(50, 650, 300, 50);
-
-      this.label = this.add.text(60, 660, '', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
-      this.typewriteText(str);
-    }
-
-    newText(str){
-        if (!this.isTyping){
-            this.label.text = "";
-            this.typewriteText(str);
-        }
-    }
-
-    textBoxDestroy() {
-        if (!this.isTyping) {
-            this.graphics.destroy();
-            this.label.destroy();
-        }
-    }
-
-    typewriteText(text) {
-	    const length = text.length;
-	    let i = 0;
-        this.isTyping = true;
-	    this.time.addEvent({
-		    callback: () => {
-		        this.label.text += text[i];
-			    ++i;
-                if (i == length){
-                    this.isTyping = false;
-                }
-	        },
-		    repeat: length-1,
-		    delay: 50
-        })
-    }
-
-    attack(){
-        if (!this.isAttacking){
-            this.isAttacking = true;
-            this.player.play('attack');
-            this.time.addEvent({
-                delay: 1000, // in ms
-                callback: () => {
-                    this.isAttacking = false;
-                    this.runUp();
-                }
-            })
-
-        }
-    }
+    
 
     //button works yay
     runDown(){
@@ -347,10 +210,7 @@ export default class Game extends Phaser.Scene {
         else{
             this.bug.y += 0.1;
         }
-        
 
-        //this.physics.arcade.collide(this.player, this.bug);
-        //this.physics.arcade.collide(this.player, this.bug);
         if(this.isRunning && !this.playerBlocked){
             this.bg1.x -= 0.1;
             this.bg2.x -= 0.2;
@@ -379,11 +239,5 @@ export default class Game extends Phaser.Scene {
 
             this.box.x -=2;
         }
-        else {
-            true;
-        }
-        //this.debug.setText(['x:'+this.bg11.x ,'y:'+this.bg11.y]);
-        
-        
     }
 }
