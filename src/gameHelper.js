@@ -1,49 +1,52 @@
 class Button {
     constructor(x, y, label, scene, callback, callback2) {
         scene.isDown = false
-        const button = scene.add.text(x, y, label)
+        this.button = scene.add.text(x, y, label)
             .setOrigin(0.5)
             .setPadding(10)
             .setStyle({ backgroundColor: '#031f4c' })
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => callback())
             .on('pointerup', ()=> callback2())
-            .on('pointerover', () => button.setStyle({ fill: '#000' }))
+            .on('pointerover', () => this.button.setStyle({ fill: '#000' }))
             .on('pointerout', () => {
-                button.setStyle({ fill: '#FFF' })
+                this.button.setStyle({ fill: '#FFF' })
                 scene.isRunning = false
                 scene.player.play('idle');
             });
+    }
+    destroy(){
+        this.button.destroy();
     }
 }
 
 class AttackButton {
     constructor(x, y, label, scene, callback, callback2) {
         scene.isDown = false
-        const button = scene.add.text(x, y, label)
+        this.button = scene.add.text(x, y, label)
             .setOrigin(0.5)
             .setPadding(10)
             .setStyle({ backgroundColor: '#031f4c' })
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => callback())
             .on('pointerup', ()=> callback2())
-            .on('pointerover', () => button.setStyle({ fill: '#000' }))
+            .on('pointerover', () => this.button.setStyle({ fill: '#000' }))
             .on('pointerout', () => {
-                button.setStyle({ fill: '#FFF' })
+                this.button.setStyle({ fill: '#FFF' })
                 scene.isRunning = false
                 //scene.player.play('idle');
             });
     }
 
-    destroy(scene){
-        scene.button.destroy();
+    destroy(){
+        this.button.destroy();
     }
 }
 
 
 function fighting(scene){
-    scene.playerBox();
-    scene.enemyBox();
+    playerBox(scene);
+    enemyBox(scene);
 }
 
 function notFighting(scene){
@@ -84,13 +87,13 @@ function textBox(scene, str){
     scene.graphics.fillRect(50, 650, 300, 50);
 
     scene.label = scene.add.text(60, 660, '', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
-    scene.typewriteText(str);
+    typewriteText(scene,str);
 }
 
 function newText(scene, str){
       if (!scene.isTyping){
           scene.label.text = "";
-          scene.typewriteText(str);
+          typewriteText(scene,str);
       }
 }
 
@@ -132,4 +135,16 @@ function attack(scene){
     }
 }
 
-module.exports = { Button, AttackButton, fighting,notFighting,playerBox,enemyBox, textBox,newText,textBoxDestroy,typewriteText,attack}
+module.exports = {
+  Button,
+  AttackButton,
+  fighting,
+  notFighting,
+  playerBox,
+  enemyBox,
+  textBox,
+  newText,
+  textBoxDestroy,
+  typewriteText,
+  attack
+}

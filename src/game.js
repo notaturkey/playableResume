@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import * as helper from './gameHelper' ;
+import * as bugFight1 from './firstBug';
 import bg1 from './assets/background/bg1.png';
 import bg2 from './assets/background/bg2.png';
 import bg3 from './assets/background/bg3.png';
@@ -91,43 +92,26 @@ export default class Game extends Phaser.Scene {
         this.player.setBounce(0.2);
         this.player.setVelocity(0);
         this.playerBlocked = false
-        
 
-        //Bug 1 
+
+        //Bug 1
         this.bug = this.physics.add.image(700, 730, 'bug');
         this.bug.setBounce(0.2);
         this.bug.setVelocity(0);
         this.bugUp = true;
-        
+
         //Collision Box
         this.box = this.physics.add.sprite(500, 730);
         this.box.setVelocity(0);
-        
+
         //On Collision
         this.physics.add.collider(this.player, this.box, () => {
-            this.box.destroy();
-            this.playerBlocked = true;
-            helper.fighting(this);
-
-            helper.textBox(this,"Oh No! You've encountered a poorly drawn bug!");
-            
-            this.secondPrompt = false;
-            this.button = new AttackButton(300,750,'Ok', this, () => { 
-                    if (!this.isTyping && !this.secondPrompt) {
-                        this.textBoxDestroy();
-                        this.textBox("Which skill should thomas use to defeat this bug?");
-                        this.secondPrompt = true;
-                    }
-                    else{
-                        this.textBoxDestroy();
-                        this.destroy();
-                    }
-                }, ()=>{});
+            bugFight1.startFirstBug(this);
         });
 
         this.bg11 = this.add.image(450,397, 'bg11');
         this.bg211 = this.add.image(this.mappos2,397, 'bg11');
-        
+
         //Camera
         this.cameras.main.setBounds(0, 0, 928, 793);
         this.cameras.main.centerOn(this.player.x, this.player.y);
@@ -140,27 +124,27 @@ export default class Game extends Phaser.Scene {
         //adding some debug text that displays to the camera position instead of world position
         //this.debug = this.add.text(300, 600, '').setOrigin(0.5);
         //this.debug.setScrollFactor(0,0);
-        
-        // game states 
+
+        // game states
         this.isRunning = false;
         this.isAttacking = false;
         this.isTyping = false;
-        
+
         helper.textBox(this,"Here is Thomas McDonald, a young developer fresh out of college with some skills under his belt to fight some bugs!");
-        this.button = new Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
+        this.runButton = new helper.Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
         //this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
 
-        this.button = new AttackButton(300,750,'Ok', this, () => {
+        this.button = new helper.AttackButton(300,750,'Ok', this, () => {
             if (!this.isTyping) {
-                this.textBoxDestroy();
-                this.button = new Button(300, 750, 'Run', this, () => this.runDown(), () => this.runUp());
+                helper.textBoxDestroy(this);
+                this.button.destroy();
                 //this.button = new AttackButton(200, 750, 'Attack', this, () => this.attack(), ()=>{});
             }
         }, ()=>{});
-        
+
     }
 
-    
+
 
     //button works yay
     runDown(){
@@ -196,8 +180,8 @@ export default class Game extends Phaser.Scene {
         this.swapChunks(this.bg9, this.bg29);
         this.swapChunks(this.bg10, this.bg210);
         this.swapChunks(this.bg11, this.bg211);
-        
-        if (this.bugUp && this.bug.y < 710 ){ 
+
+        if (this.bugUp && this.bug.y < 710 ){
             this.bugUp = false;
         }
         else if (!this.bugUp && this.bug.y > 740){
