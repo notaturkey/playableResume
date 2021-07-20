@@ -111,6 +111,7 @@ function typewriteText(scene,text) {
     scene.time.addEvent({
         callback: () => {
             scene.label.text += text[i];
+            scene.isTyping = true;
             ++i;
             if (i == length){
                 scene.isTyping = false;
