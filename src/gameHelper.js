@@ -65,7 +65,7 @@ function playerBox(scene){
     scene.playerGraphics.strokeRect(50, 350, 100, 200);
     scene.playerGraphics.fillRect(50, 350, 100, 200);
     scene.playerName = scene.add.text(60, 360, 'Thomas', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
-    scene.playerStats = scene.add.text(60, 370, 'HP:0\nLevel:0\nStatus:0\nDescription: \ndumb', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
+    scene.playerStats = scene.add.text(60, 370, 'HP:100/100\nLevel:0\nStatus:\n---caffeinated\nDescription: \n---UCCS Graduate', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
 }
 
 function enemyBox(scene){
@@ -75,7 +75,7 @@ function enemyBox(scene){
     scene.enemyGraphics.strokeRect(250, 350, 100, 200);
     scene.enemyGraphics.fillRect(250, 350, 100, 200);
     scene.enemyName = scene.add.text(260, 360, 'Enemy', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
-    scene.enemyStats = scene.add.text(260, 370, 'HP:0\nLevel:0\nStatus:\n Poorly Drawn', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
+    scene.enemyStats = scene.add.text(260, 370, 'HP:'+scene.enemyHealth+'/100\nLevel:0\nStatus:\n---Poorly Drawn\nDescription:\n---This guy pops\n---up alot.', {font: 'bold 10px Arial', fill: 'white', align: 'left', wordWrap: { width: 275, useAdvancedWrap: true } });
 
 }
 

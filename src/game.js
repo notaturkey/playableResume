@@ -99,6 +99,7 @@ export default class Game extends Phaser.Scene {
         this.bug.setBounce(0.2);
         this.bug.setVelocity(0);
         this.bugUp = true;
+        this.enemyHealth = 100;
 
         //Collision Box
         this.box = this.physics.add.sprite(500, 730);
