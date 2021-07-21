@@ -163,25 +163,25 @@ function wasAttacked2(scene) {
 }
 
 function skills3(scene){
-    button1 = new helper.AttackButton(70,700,'.NET with C#', scene, () => {
+    button1 = new helper.AttackButton(90,700,'.NET with C#', scene, () => {
         if (!scene.isTyping) {
             attack3(scene);
         }
     }, ()=>{});
 
-    button2 = new helper.AttackButton(270,700,'node.js with electron', scene, () => {
+    button2 = new helper.AttackButton(285,700,'node.js with electron', scene, () => {
         if (!scene.isTyping) {
             attack3(scene);
         }
     }, ()=>{});
 
-    button3 = new helper.AttackButton(70,650,'MongoDB', scene, () => {
+    button3 = new helper.AttackButton(90,650,'MongoDB', scene, () => {
         if (!scene.isTyping) {
             attack3(scene);
         }
     }, ()=>{});
 
-    button4 = new helper.AttackButton(200,650,'AWS', scene, () => {
+    button4 = new helper.AttackButton(250,650,'AWS', scene, () => {
         if (!scene.isTyping) {
             attack3(scene);
         }
@@ -289,25 +289,27 @@ function wasAttacked4(scene) {
     var prompt = 0;
     helper.textBox(scene,"Critical Hit!");
     scene.okButton = new helper.AttackButton(300,750,'Ok', scene, () => {
-        switch(prompt) {
-        case 0:
-            prompt += 1;
-            helper.textBoxDestroy(scene);
-            helper.textBox(scene,"Thomas's internship at NASA and his fulltime position following the internship really packs a punch!");
-            // code block
-            break;
-        case 1:
-            prompt += 1;
-            helper.textBoxDestroy(scene);
-            helper.textBox(scene,"Thomas has defeated a bug! There will be more to come I'm sure.");
-            break;
-        default:
-            helper.textBoxDestroy(scene);
-            scene.playerBlocked = false;
-            helper.notFighting(scene);
-            scene.bug.destroy();
-            // code block
-            scene.runButton = new helper.Button(300, 750, 'Run', scene, () => scene.runDown(), () => scene.runUp());
+        if (!scene.isTyping) {
+            switch(prompt) {
+            case 0:
+                prompt += 1;
+                helper.textBoxDestroy(scene);
+                helper.textBox(scene,"Thomas's internship at NASA and his fulltime position following the internship really packs a punch!");
+                // code block
+                break;
+            case 1:
+                prompt += 1;
+                helper.textBoxDestroy(scene);
+                helper.textBox(scene,"Thomas has defeated a bug! There will be more to come I'm sure.");
+                break;
+            default:
+                helper.textBoxDestroy(scene);
+                scene.playerBlocked = false;
+                helper.notFighting(scene);
+                scene.bug.destroy();
+                // code block
+                scene.runButton = new helper.Button(300, 750, 'Run', scene, () => scene.runDown(), () => scene.runUp());
+            }
         }
     }, ()=>{});
 }

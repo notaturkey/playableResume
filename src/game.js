@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import * as helper from './gameHelper' ;
 import * as bugFight1 from './firstBug';
+import * as endGame from './end'
 import bg1 from './assets/background/bg1.png';
 import bg2 from './assets/background/bg2.png';
 import bg3 from './assets/background/bg3.png';
@@ -105,9 +106,16 @@ export default class Game extends Phaser.Scene {
         this.box = this.physics.add.sprite(500, 730);
         this.box.setVelocity(0);
 
+        this.box2 = this.physics.add.sprite(750, 730);
+        this.box2.setVelocity(0);
+
         //On Collision
         this.physics.add.collider(this.player, this.box, () => {
             bugFight1.startFirstBug(this);
+        });
+
+        this.physics.add.collider(this.player, this.box2, () => {
+            endGame.end(this);
         });
 
         this.bg11 = this.add.image(450,397, 'bg11');
@@ -223,6 +231,7 @@ export default class Game extends Phaser.Scene {
             this.bug.x -=2;
 
             this.box.x -=2;
+            this.box2.x -=2;
         }
     }
 }
