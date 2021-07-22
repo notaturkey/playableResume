@@ -5,6 +5,7 @@ var button2;
 var button3;
 
 export function end(scene) {
+    //no idea where those extra 2 buttons are coming from
     scene.box2.destroy();
     scene.playerBlocked = true;
     scene.runButton.destroy();
@@ -14,12 +15,13 @@ export function end(scene) {
     if (!scene.isTyping) {
             helper.textBoxDestroy(scene);
             links(scene);
+            scene.okButton.destroy();
         }
     }, ()=>{});
 };
 
 function links(scene){
-    scene.okButton.destroy();
+    
     button1 = new helper.AttackButton(70,700,'LinkedIn', scene, () => {
         var url = 'https://www.linkedin.com/in/thomas-mcdonald-ii-779303138/';
         var s = window.open(url, '_blank');
